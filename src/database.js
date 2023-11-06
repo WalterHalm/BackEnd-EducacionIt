@@ -1,7 +1,10 @@
 import mongoose from "mongoose"
+import config from "./config.js"
 
 
-mongoose.connect("mongodb://127.0.0.1:27017",{
+
+
+mongoose.connect(config.mongoUrlAtlas,{
                 keepAlive:true,
                 useNewUrlParser:true,
                 useUnifiedTopology: true,
