@@ -1,16 +1,25 @@
-import mongoose from "mongoose"
-import config from "./config.js"
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+dotenv.config();
+
+const MongoLocal = process.env.Mongo_Url_Local;
+const MongoAtlas = process.env.Mongo_Url_Atlas;
 
 
+const conexion = mongoose.connect(MongoLocal).then(
+    
+    () => { 
+      
+        console.log('Conectado a la base de datos');
+    },
+    
+    err => { 
+        console.log(`No tenemos conexión por ${err.message}`);
+    }
+);
 
+export default conexion; 
 
-mongoose.connect(config.mongoUrlAtlas,{
-                keepAlive:true,
-                useNewUrlParser:true,
-                useUnifiedTopology: true,
-                useFindAndModify: true,
-                useCreateIndex: true
-})
-.then(db => console.log("conexion a la base de datos exitosa"))
-.catch(error=>console.log(error));
+//------------------------------------------------------------------------
+
 

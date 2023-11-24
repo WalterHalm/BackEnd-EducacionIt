@@ -1,7 +1,8 @@
 import User from "../models/user.js"
 import jwt from "jsonwebtoken"
-import config from "../config.js"
 import Role from "../models/role.js";
+import dotenv from 'dotenv';
+dotenv.config();
 
 
 export const signUp =  async (req, res)=>{
@@ -26,7 +27,7 @@ export const signUp =  async (req, res)=>{
 
    console.log(savedUser);
 
-   const token = jwt.sign({id:savedUser._id}, config.secret,{
+   const token = jwt.sign({id:savedUser._id}, process.env.secret,{
     expiresIn: 86400 // 24horas
    } )
 
@@ -41,8 +42,16 @@ export const signIn =  async (req, res)=>{
    const matchPassword = await User.comparePassword(req.body.password, userFound.password)
    if(!matchPassword) return res.status(401).json({token: null, message:"Password invalido"}) // verificamos si existe email
    
-   const token = jwt.sign({id: userFound._id}, config.secret,{
+   const token = jwt.sign({id: userFound._id}, process.env.secret,{
     expiresIn:86400
    })
-   res.json({token})  
+
+   const cookieOption = {
+    expires: new Date (Date.now() + process.env.JWT_COOKIE *24*60*60*100),
+    path:"/"
+   }
+
+   res.cookie("jwt", token, cookieOption);
+
+   res.send({status:"ok", message:"ingreso session correcto", redirect:"/api/products"}) 
 }
